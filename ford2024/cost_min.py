@@ -8,18 +8,22 @@ from typing import List, Tuple, Dict
 # weeks = 3
 # Answer [(190), (200, 450, 499, 358), (160)]
 
-costs = [190, 200, 450, 870, 110, 499, 358, 160]
-weeks = 4
+COSTS = [190, 200, 450, 870, 110, 499, 358, 160]
+WEEKS = 4
 
-def calculate_max_sum(bars: List[int], costs: List[int]) -> int:
+
+def calculate_sum(bars: List[int]) -> int:
+    """Sums the maxes of each partition for a given set of separators"""
     summ = 0
     for i in range(len(bars) - 1):
+        summ += max(COSTS[bars[i]:bars[i + 1]])
         # print(costs[bars[i]:bars[i + 1]])
-        summ += max(costs[bars[i]:bars[i + 1]])
         # print(summ)
     return summ
 
-def optimize():
+
+def optimize() -> Tuple[str, int]:
+    """Main solution method"""
     # [190 | 200 | 450 499 358 160]
     # [190 | 200 450 | 499 358 160]
     # [190 | 200 450 499 | 358 160]
@@ -59,48 +63,51 @@ def optimize():
     # [190 200 | 450 | 870 110 | 499 358 160]
     # [190 200 | 450 | 870 110 499 | 358 160]
     # [190 200 | 450 | 870 110 499 358 | 160]
-    limits: List[int] = [len(costs) - (weeks - x) + 1 for x in range(weeks - 1)]
-    bars = [x + 1 for x in range(weeks - 1)]
+    limits: List[int] = [len(COSTS) - (WEEKS - x) + 1 for x in range(WEEKS - 1)]
+    bars = [x + 1 for x in range(WEEKS - 1)]
     bars.insert(0, 0)
-    bars.append(len(costs))
+    bars.append(len(COSTS))
     # hard-coded test case
     # bars = [1, 2, 3]
     # bars.insert(0, 0)
     # bars.append(len(costs))
     print("Limits", limits)
-    results: Dict[str, int] = {}
-        # {
-        #     (1, 2, 3): 470,
-        #     (1, 2, 4): 570,
-        #     ...
-        #     (6, 7, 8): 492
-        # }
     print(bars)
-    # print(limits)
-    summ = 0
+    results: Dict[str, int] = {}
+    # {
+    #     (1, 2, 3): 470,
+    #     (1, 2, 4): 570,
+    #     ...
+    #     (6, 7, 8): 492
+    # }
 
-    print(costs)
+    print(COSTS)
     print()
-    results[",".join(str(x) for x in bars[1:-1])] = calculate_max_sum(bars, costs)
+    results[",".join(str(x) for x in bars[1:-1])] = calculate_sum(bars)
     print(results)
-    while bars[1:len(bars)-1] != limits:
+    while bars[1:len(bars) - 1] != limits:
         i = len(bars) - 2
         print(bars[i])
         while True:
             break
         break
 
-    return sum(costs)
+    _min_part = min(results, key=results.get)  # type: ignore
+    _min_sum = results[_min_part]
+    return _min_part, _min_sum
 
 
-
-def minimum_weekly_input():
-    n = len(costs)
-    print(f"n{weeks}")
-    print(f"costs={costs}")
+def optimize_official_dynamic_programming_solution():
+    """
+    Main solution.  Answer from:
+    https://leetcode.com/discuss/interview-question/5876966/LinkedIn-OA-2025-Summer-Intern
+    """
+    n = len(COSTS)
+    print(f"n{WEEKS}")
+    print(f"costs={COSTS}")
 
     # Initialize dp array
-    dp = [[math.inf] * (weeks + 1) for _ in range(n + 1)]
+    dp = [[math.inf] * (WEEKS + 1) for _ in range(n + 1)]
     # dp2 = [[math.inf] * (weeks + 1)] * (n + 1)
     # print(dp)
     # print(dp2)
@@ -117,7 +124,7 @@ def minimum_weekly_input():
     # [ _ _  _  _ ] 160
 
     # For each week
-    for w in range(0, weeks):
+    for w in range(0, WEEKS):
         print(f"w={w}")
         # for each of the cost
         for i in range(1, n + 1):
@@ -125,9 +132,10 @@ def minimum_weekly_input():
             max_cost_in_week = 0
 
             for k in range(i - 1, -1, -1):
-                # Compute the maximum cost within the current subarray being considered for the week
-                max_cost_in_week = max(max_cost_in_week, costs[k])
-                print(f"    k={k}, c={costs[k]}, maxc={max_cost_in_week}", end="")
+                # Compute the maximum cost within the current subarray
+                # being considered for the week
+                max_cost_in_week = max(max_cost_in_week, COSTS[k])
+                print(f"    k={k}, c={COSTS[k]}, maxc={max_cost_in_week}", end="")
 
                 # Ensure the previous state is valid before using it in the computation
                 if dp[k][w] != math.inf:
@@ -138,7 +146,9 @@ def minimum_weekly_input():
 
     for p in dp:
         print(f"p={p}")
-    return int(dp[n][weeks])
+    return int(dp[n][WEEKS])
 
 
-optimize()
+solution = optimize()
+print()
+print(f"Solution: {solution}")
