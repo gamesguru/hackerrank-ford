@@ -11,6 +11,13 @@ from typing import List, Tuple, Dict
 costs = [190, 200, 450, 870, 110, 499, 358, 160]
 weeks = 4
 
+def calculate_max_sum(bars: List[int], costs: List[int]) -> int:
+    summ = 0
+    for i in range(len(bars) - 1):
+        # print(costs[bars[i]:bars[i + 1]])
+        summ += max(costs[bars[i]:bars[i + 1]])
+        # print(summ)
+    return summ
 
 def optimize():
     # [190 | 200 | 450 499 358 160]
@@ -38,16 +45,30 @@ def optimize():
     # [190 | 200 450 | 870 110 | 499 358 160]
     # [190 | 200 450 | 870 110 499 | 358 160]
     # [190 | 200 450 | 870 110 499 358 | 160]
-    limits: List[int] = [len(costs) - (weeks - x) for x in range(weeks)]
-    bars = [x for x in range(weeks)]
+
+    # [190 | 200 450 870 | 110 | 499 358 160]
+    # [190 | 200 450 870 | 110 499 | 358 160]
+    # [190 | 200 450 870 | 110 499 358 | 160]
+
+    # [190 | 200 450 870 110 | 499 | 358 160]
+    # [190 | 200 450 870 110 | 499 358 | 160]
+
+    # [190 | 200 450 870 110 499 | 358 | 160]
+
+    # [190 200 | 450 | 870 | 110 499 358 160]
+    # [190 200 | 450 | 870 110 | 499 358 160]
+    # [190 200 | 450 | 870 110 499 | 358 160]
+    # [190 200 | 450 | 870 110 499 358 | 160]
+    limits: List[int] = [len(costs) - (weeks - x) + 1 for x in range(weeks - 1)]
+    bars = [x + 1 for x in range(weeks - 1)]
     bars.insert(0, 0)
     bars.append(len(costs))
     # hard-coded test case
     # bars = [1, 2, 3]
     # bars.insert(0, 0)
     # bars.append(len(costs))
-
-    results: Dict[Tuple, int] = {}
+    print("Limits", limits)
+    results: Dict[str, int] = {}
         # {
         #     (1, 2, 3): 470,
         #     (1, 2, 4): 570,
@@ -55,21 +76,22 @@ def optimize():
         #     (6, 7, 8): 492
         # }
     print(bars)
-    print(limits)
+    # print(limits)
     summ = 0
 
     print(costs)
     print()
-    summ = 0
-    for i in range(len(bars) - 1):
-        summ += max(costs[bars[i]:bars[i + 1]])
-
-    while True:
-        i = bars[-1]
+    results[",".join(str(x) for x in bars[1:-1])] = calculate_max_sum(bars, costs)
+    print(results)
+    while bars[1:len(bars)-1] != limits:
+        i = len(bars) - 2
+        print(bars[i])
         while True:
             break
         break
+
     return sum(costs)
+
 
 
 def minimum_weekly_input():
@@ -119,4 +141,4 @@ def minimum_weekly_input():
     return int(dp[n][weeks])
 
 
-print(optimize())
+optimize()
