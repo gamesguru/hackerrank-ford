@@ -1,8 +1,11 @@
+"""
+Solve 3rd problem
+"""
 import math
 from typing import Tuple, List
 
 costs = [190, 200, 450, 499, 358, 160]
-weeks = 3 
+weeks = 3
 # Answer [(190), (200, 450, 499, 358), (160)]
 
 # target 7
@@ -11,8 +14,10 @@ weeks = 3
 
 results: List[Tuple[int, int]] = list()
 
+
 def optimize(costs, weeks):
     return sum(costs)
+
 
 def minimum_weekly_input(costs, weeks):
     n = len(costs)
@@ -29,7 +34,7 @@ def minimum_weekly_input(costs, weeks):
     dp[0][0] = 0
 
     # 190
-    
+
     # For each week
     for w in range(0, weeks):
 
@@ -52,5 +57,6 @@ def minimum_weekly_input(costs, weeks):
     for p in dp[1:]:
         print(f"p={p[1:]}")
     return int(dp[n][weeks])
+
 
 print(minimum_weekly_input(costs, weeks))
