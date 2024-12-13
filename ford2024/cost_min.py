@@ -85,11 +85,12 @@ def optimize() -> Tuple[str, int]:
     print()
     results[",".join(str(x) for x in bars[1:-1])] = calculate_sum(bars)
     print(results)
+    l = len(bars) - 3
+    r = len(bars) - 2
     while bars[1:len(bars) - 1] != limits:
-        i = len(bars) - 2
-        print(bars[i])
-        while True:
-            break
+        print(bars[l], bars[r])
+        while bars[r] < limits[r]:
+            bars[r] += 1
         break
 
     _min_part = min(results, key=results.get)  # type: ignore
