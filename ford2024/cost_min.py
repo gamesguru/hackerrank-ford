@@ -85,18 +85,37 @@ def optimize() -> Tuple[str, int]:
     print()
     results[",".join(str(x) for x in bars[1:-1])] = calculate_sum(bars)
     print(results)
-    l = len(bars) - 3
-    r = len(bars) - 2
-    while bars[1:len(bars) - 1] != limits:
-        print(bars[l], bars[r])
-        while bars[r] < limits[r]:
-            bars[r] += 1
-        break
 
+    while True:
+        results[",".join(str(x) for x in bars[1:-1])] = calculate_sum(bars)
+        result = move_next(bars, limits)
+        if result: break
+
+    print(f"results: {results}")
+
+    # l = len(bars) - 3
+    # r = len(bars) - 2
+    # while bars[1:len(bars) - 1] != limits:
+    #     print(bars[l], bars[r])
+    #     while bars[r] < limits[r - 1]:
+    #         bars[r] += 1
+    #         # print(bars[r])
+    #     # print(bars[l])
+    #     # print(bars[r])
+    #     break
     _min_part = min(results, key=results.get)  # type: ignore
     _min_sum = results[_min_part]
     return _min_part, _min_sum
 
+def move_next(bars: List[int], limits: List[int]) -> bool:
+    for x in range(len(bars) - 2, 0, -1):
+        print(f"Curr index: {x}")
+        if bars[x] != limits[x - 1]:
+            bars[x] += 1
+            for y in range(x + 1, len(bars) - 1):
+                bars[y] = bars[y - 1] + 1
+            return False
+    return True
 
 def optimize_official_dynamic_programming_solution():
     """
@@ -153,3 +172,5 @@ def optimize_official_dynamic_programming_solution():
 solution = optimize()
 print()
 print(f"Solution: {solution}")
+
+# print(optimize_official_dynamic_programming_solution())
