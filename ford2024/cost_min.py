@@ -2,6 +2,7 @@
 Solve 3rd problem
 """
 
+import itertools
 import math
 from typing import Dict, List, Tuple
 
@@ -68,6 +69,10 @@ def optimize() -> Tuple[str, int]:
     """Main solution method"""
     limits: List[int] = [len(COSTS) - (WEEKS - x) + 1 for x in range(WEEKS - 1)]
     bars = [x + 1 for x in range(WEEKS - 1)]
+    _combs = list(itertools.combinations((x for x in range(1, len(COSTS))), WEEKS - 1))
+    print(len(_combs))
+    for _c in _combs:
+        print(f"  {_c}")
     bars.insert(0, 0)
     bars.append(len(COSTS))
 
@@ -80,25 +85,23 @@ def optimize() -> Tuple[str, int]:
     # i.e., {'1,2,3': 470, '1,2,4': 570, ... '6,7,8': 492}
 
     # Main loop
-    while True:
+    finished = False
+    while not finished:
         # Calculate sum, add to results
         results[",".join(str(x) for x in bars[1:-1])] = calculate_sum(bars)
         # Move bars
         finished = move_next(bars, limits)
 
-        if finished:
-            break
-
-    print("Results:")
-    for k, v in results.items():
-        print(f"    {k}: {v}")
+    print(f"{len(results)} results:")
+    # for k, v in results.items():
+    #     print(f"    {k}: {v}")
 
     _min_partition = min(results, key=results.get)  # type: ignore
     return _min_partition, results[_min_partition]
 
 
 def move_next(bars: List[int], limits: List[int]) -> bool:
-    """Advance a couple bars. Can also use itertools.combination()"""
+    """Advance a couple bars. Can also use itertools.combinations()"""
     for x in range(len(bars) - 2, 0, -1):
         # print(f"Curr index: {x}")
         if bars[x] != limits[x - 1]:
