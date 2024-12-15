@@ -1,121 +1,113 @@
 """
 Solve 3rd problem
 """
-import math
-from typing import List, Tuple, Dict
 
-# costs = [190, 200, 450, 499, 358, 160]
-# weeks = 3
+import math
+from typing import Dict, List, Tuple
+
+# COSTS = [190, 200, 450, 499, 358, 160]
+# WEEKS = 3
 # Answer [(190), (200, 450, 499, 358), (160)]
 
 COSTS = [190, 200, 450, 870, 110, 499, 358, 160]
 WEEKS = 4
+# Solution: ('1,2,7', 1420)
+
+# EXAMPLE PROBLEMS
+# 3 weeks
+# [190 | 200 | 450 499 358 160]
+# [190 | 200 450 | 499 358 160]
+# [190 | 200 450 499 | 358 160]
+# [190 | 200 450 499 358 | 160]
+
+# [190 200 | 450 | 499 358 160]
+# [190 200 | 450 499 | 358 160]
+# [190 200 | 450 499 358 | 160]
+
+# [190 200 450 | 499 | 358 160]
+# [190 200 450 | 499 358 | 160]
+
+# [190 200 450 499 | 358 | 160]
+
+# 4 weeks
+# [190 | 200 | 450 | 870 110 499 358 160]
+# [190 | 200 | 450 870 | 110 499 358 160]
+# [190 | 200 | 450 870 110 | 499 358 160]
+# [190 | 200 | 450 870 110 499 | 358 160]
+# [190 | 200 | 450 870 110 499 358 | 160]
+
+# [190 | 200 450 | 870 | 110 499 358 160]
+# [190 | 200 450 | 870 110 | 499 358 160]
+# [190 | 200 450 | 870 110 499 | 358 160]
+# [190 | 200 450 | 870 110 499 358 | 160]
+
+# [190 | 200 450 870 | 110 | 499 358 160]
+# [190 | 200 450 870 | 110 499 | 358 160]
+# [190 | 200 450 870 | 110 499 358 | 160]
+
+# [190 | 200 450 870 110 | 499 | 358 160]
+# [190 | 200 450 870 110 | 499 358 | 160]
+
+# [190 | 200 450 870 110 499 | 358 | 160]
+
+# [190 200 | 450 | 870 | 110 499 358 160]
+# [190 200 | 450 | 870 110 | 499 358 160]
+# [190 200 | 450 | 870 110 499 | 358 160]
+# [190 200 | 450 | 870 110 499 358 | 160]
 
 
 def calculate_sum(bars: List[int]) -> int:
     """Sums the maxes of each partition for a given set of separators"""
     summ = 0
     for i in range(len(bars) - 1):
-        summ += max(COSTS[bars[i]:bars[i + 1]])
-        # print(costs[bars[i]:bars[i + 1]])
-        # print(summ)
+        summ += max(COSTS[bars[i] : bars[i + 1]])
     return summ
 
 
 def optimize() -> Tuple[str, int]:
     """Main solution method"""
-    # [190 | 200 | 450 499 358 160]
-    # [190 | 200 450 | 499 358 160]
-    # [190 | 200 450 499 | 358 160]
-    # [190 | 200 450 499 358 | 160]
-
-    # [190 200 | 450 | 499 358 160]
-    # [190 200 | 450 499 | 358 160]
-    # [190 200 | 450 499 358 | 160]
-
-    # [190 200 450 | 499 | 358 160]
-    # [190 200 450 | 499 358 | 160]
-
-    # [190 200 450 499 | 358 | 160]
-
-    # 4 weeks
-    # [190 | 200 | 450 | 870 110 499 358 160]
-    # [190 | 200 | 450 870 | 110 499 358 160]
-    # [190 | 200 | 450 870 110 | 499 358 160]
-    # [190 | 200 | 450 870 110 499 | 358 160]
-    # [190 | 200 | 450 870 110 499 358 | 160]
-
-    # [190 | 200 450 | 870 | 110 499 358 160]
-    # [190 | 200 450 | 870 110 | 499 358 160]
-    # [190 | 200 450 | 870 110 499 | 358 160]
-    # [190 | 200 450 | 870 110 499 358 | 160]
-
-    # [190 | 200 450 870 | 110 | 499 358 160]
-    # [190 | 200 450 870 | 110 499 | 358 160]
-    # [190 | 200 450 870 | 110 499 358 | 160]
-
-    # [190 | 200 450 870 110 | 499 | 358 160]
-    # [190 | 200 450 870 110 | 499 358 | 160]
-
-    # [190 | 200 450 870 110 499 | 358 | 160]
-
-    # [190 200 | 450 | 870 | 110 499 358 160]
-    # [190 200 | 450 | 870 110 | 499 358 160]
-    # [190 200 | 450 | 870 110 499 | 358 160]
-    # [190 200 | 450 | 870 110 499 358 | 160]
     limits: List[int] = [len(COSTS) - (WEEKS - x) + 1 for x in range(WEEKS - 1)]
     bars = [x + 1 for x in range(WEEKS - 1)]
     bars.insert(0, 0)
     bars.append(len(COSTS))
-    # hard-coded test case
-    # bars = [1, 2, 3]
-    # bars.insert(0, 0)
-    # bars.append(len(costs))
-    print("Limits", limits)
-    print(bars)
-    results: Dict[str, int] = {}
-    # {
-    #     (1, 2, 3): 470,
-    #     (1, 2, 4): 570,
-    #     ...
-    #     (6, 7, 8): 492
-    # }
 
-    print(COSTS)
+    print("Limits  ", limits)
+    print("Bars ", bars)
+    print("Costs", COSTS)
     print()
-    results[",".join(str(x) for x in bars[1:-1])] = calculate_sum(bars)
-    print(results)
 
+    results: Dict[str, int] = {}
+    # i.e., {'1,2,3': 470, '1,2,4': 570, ... '6,7,8': 492}
+
+    # Main loop
     while True:
+        # Calculate sum, add to results
         results[",".join(str(x) for x in bars[1:-1])] = calculate_sum(bars)
-        result = move_next(bars, limits)
-        if result: break
+        # Move bars
+        finished = move_next(bars, limits)
 
-    print(f"results: {results}")
+        if finished:
+            break
 
-    # l = len(bars) - 3
-    # r = len(bars) - 2
-    # while bars[1:len(bars) - 1] != limits:
-    #     print(bars[l], bars[r])
-    #     while bars[r] < limits[r - 1]:
-    #         bars[r] += 1
-    #         # print(bars[r])
-    #     # print(bars[l])
-    #     # print(bars[r])
-    #     break
-    _min_part = min(results, key=results.get)  # type: ignore
-    _min_sum = results[_min_part]
-    return _min_part, _min_sum
+    print("Results:")
+    for k, v in results.items():
+        print(f"    {k}: {v}")
+
+    _min_partition = min(results, key=results.get)  # type: ignore
+    return _min_partition, results[_min_partition]
+
 
 def move_next(bars: List[int], limits: List[int]) -> bool:
+    """Advance a couple bars. Can also use itertools.combination()"""
     for x in range(len(bars) - 2, 0, -1):
-        print(f"Curr index: {x}")
+        # print(f"Curr index: {x}")
         if bars[x] != limits[x - 1]:
             bars[x] += 1
             for y in range(x + 1, len(bars) - 1):
                 bars[y] = bars[y - 1] + 1
             return False
     return True
+
 
 def optimize_official_dynamic_programming_solution():
     """
@@ -169,8 +161,7 @@ def optimize_official_dynamic_programming_solution():
     return int(dp[n][WEEKS])
 
 
-solution = optimize()
 print()
-print(f"Solution: {solution}")
 
+print(f"Solution: {optimize()}")
 # print(optimize_official_dynamic_programming_solution())
